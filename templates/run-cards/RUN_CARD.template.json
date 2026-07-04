@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "run_id": "",
+  "timestamp": "",
+  "actor": "",
+  "pets": [],
+  "repo": {
+    "path": "",
+    "remote": "",
+    "branch": "",
+    "commit": "",
+    "dirty_tree": ""
+  },
+  "runtime": {
+    "target": "",
+    "process": "",
+    "port": "",
+    "url": "",
+    "identity": ""
+  },
+  "provider": {
+    "mode": "",
+    "provider": "",
+    "cost_flags": "",
+    "ledger": ""
+  },
+  "scope": {
+    "title": "",
+    "class": "",
+    "stop_condition": ""
+  },
+  "evidence": {
+    "commands": [],
+    "artifacts": [],
+    "urls": [],
+    "readbacks": []
+  },
+  "proof": {
+    "verified": [],
+    "partial": [],
+    "smoke": [],
+    "not_run": [],
+    "blocked": []
+  },
+  "not_proven": [],
+  "next_smallest_lane": ""
+}
+

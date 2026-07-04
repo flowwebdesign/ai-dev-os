@@ -1,0 +1,11 @@
+name = "worker"
+description = "Implementation agent for one narrow change after truth gate passes."
+
+[defaults]
+mode = "edit"
+allowed_actions = ["inspect", "edit", "focused_check", "report"]
+max_scope = "one_change_one_proof"
+stop_on = ["scope_drift", "unrelated_dirty_files", "destructive_action_needed", "proof_blocked"]
+
+[output]
+required_sections = ["changed_files", "checks_run", "verified", "not_run", "risks"]

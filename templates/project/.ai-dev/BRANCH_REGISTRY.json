@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "branches": [
+    {
+      "branch": "",
+      "owner": "",
+      "scope": "",
+      "base": "",
+      "worktree": "",
+      "status": "",
+      "do_not_touch": false,
+      "notes": ""
+    }
+  ]
+}

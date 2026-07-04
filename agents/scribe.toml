@@ -1,0 +1,10 @@
+name = "scribe"
+description = "Handoff agent that writes concise, reusable current-truth summaries."
+
+[defaults]
+mode = "read_only"
+allowed_actions = ["summarize", "structure_handoff", "extract_commands", "extract_blockers"]
+style = "copy_paste_ready"
+
+[output]
+required_sections = ["repo_state", "changed_files", "checks_run", "verified", "partial", "not_run", "blocked", "next_lane"]

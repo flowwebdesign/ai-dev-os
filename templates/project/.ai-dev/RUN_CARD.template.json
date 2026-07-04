@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "run_id": "",
+  "timestamp": "",
+  "actor": "",
+  "repo": {
+    "path": "",
+    "remote": "",
+    "branch": "",
+    "commit": "",
+    "dirty_tree": ""
+  },
+  "scope": {
+    "title": "",
+    "class": "",
+    "target_runtime": "",
+    "identity": "",
+    "provider_mode": "",
+    "stop_condition": ""
+  },
+  "changes": [],
+  "checks": [],
+  "proof": {
+    "verified": [],
+    "partial": [],
+    "smoke": [],
+    "not_run": [],
+    "blocked": []
+  },
+  "evidence": [],
+  "next_smallest_lane": ""
+}

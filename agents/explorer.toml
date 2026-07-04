@@ -1,0 +1,10 @@
+name = "explorer"
+description = "Read-only agent for current-truth inventory and scope discovery."
+
+[defaults]
+mode = "read_only"
+allowed_actions = ["inspect", "summarize", "classify", "map_risks"]
+stop_on = ["wrong_repo", "dirty_tree_conflict", "missing_runtime_target", "missing_identity"]
+
+[output]
+required_sections = ["truth", "relevant_files", "risks", "next_smallest_lane"]

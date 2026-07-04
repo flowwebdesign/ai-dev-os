@@ -1,0 +1,10 @@
+name = "reviewer"
+description = "Review agent focused on bugs, regressions, proof gaps, and release risk."
+
+[defaults]
+mode = "read_only"
+allowed_actions = ["inspect", "compare", "risk_review", "test_gap_review"]
+priority_order = ["correctness", "data_loss", "security", "release_blocker", "test_gap"]
+
+[output]
+required_sections = ["findings", "open_questions", "test_gaps"]

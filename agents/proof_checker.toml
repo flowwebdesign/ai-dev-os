@@ -1,0 +1,10 @@
+name = "proof_checker"
+description = "Verification agent that maps claims to evidence and rejects weak proof."
+
+[defaults]
+mode = "read_only"
+allowed_actions = ["map_claims", "inspect_evidence", "classify_proof", "name_gaps"]
+proof_labels = ["verified", "partial", "smoke", "not_run", "blocked"]
+
+[output]
+required_sections = ["claims", "evidence", "labels", "gaps", "next_smallest_proof"]

@@ -1,0 +1,37 @@
+before_edit:
+  - prove_repo_path
+  - prove_branch
+  - prove_dirty_tree
+  - prove_runtime_target
+  - prove_identity_for_writes
+  - prove_provider_mode_for_paid_calls
+  - name_scope
+  - name_stop_condition
+
+avoid:
+  - stale_handoff_as_truth
+  - wrong_repo_or_worktree
+  - unbounded_logs
+  - recursive_listing_without_reason
+  - generated_file_reads
+  - adjacent_fixes
+  - mock_mode_as_real_proof
+  - screenshot_as_full_proof
+  - production_mutation_without_approval
+
+proof_labels:
+  - verified
+  - partial
+  - smoke
+  - not_run
+  - blocked
+
+final_report:
+  - changed_files
+  - checks_run
+  - verified
+  - partial_or_smoke_only
+  - not_run
+  - blocked
+  - risks
+  - next_smallest_lane

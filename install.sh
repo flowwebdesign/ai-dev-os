@@ -115,6 +115,7 @@ if [ "$PROJECT" -eq 1 ]; then
   copy_if_missing "$SCRIPT_DIR/templates/project/.ai-dev/PROJECT_RULES.md" "$AI_DEV_DIR/PROJECT_RULES.md"
   copy_if_missing "$SCRIPT_DIR/templates/project/.ai-dev/ACTIVE_STATE.md" "$AI_DEV_DIR/ACTIVE_STATE.md"
   copy_if_missing "$SCRIPT_DIR/templates/project/.ai-dev/PROOF_REQUIREMENTS.md" "$AI_DEV_DIR/PROOF_REQUIREMENTS.md"
+  copy_if_missing "$SCRIPT_DIR/templates/project/.ai-dev/PROOF_MATRIX.md" "$AI_DEV_DIR/PROOF_MATRIX.md"
   copy_if_missing "$SCRIPT_DIR/templates/project/.ai-dev/RELEASE_LEDGER.jsonl" "$AI_DEV_DIR/RELEASE_LEDGER.jsonl"
   copy_if_missing "$SCRIPT_DIR/templates/project/.ai-dev/RUN_CARD.template.json" "$AI_DEV_DIR/RUN_CARD.template.json"
   copy_if_missing "$SCRIPT_DIR/templates/project/.ai-dev/BRANCH_REGISTRY.json" "$AI_DEV_DIR/BRANCH_REGISTRY.json"

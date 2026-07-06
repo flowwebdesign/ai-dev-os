@@ -126,6 +126,7 @@ if ($Project) {
     Copy-IfMissing (Join-Path $ScriptDir "templates/project/.ai-dev/PROJECT_RULES.md") (Join-Path $aiDevDir "PROJECT_RULES.md")
     Copy-IfMissing (Join-Path $ScriptDir "templates/project/.ai-dev/ACTIVE_STATE.md") (Join-Path $aiDevDir "ACTIVE_STATE.md")
     Copy-IfMissing (Join-Path $ScriptDir "templates/project/.ai-dev/PROOF_REQUIREMENTS.md") (Join-Path $aiDevDir "PROOF_REQUIREMENTS.md")
+    Copy-IfMissing (Join-Path $ScriptDir "templates/project/.ai-dev/PROOF_MATRIX.md") (Join-Path $aiDevDir "PROOF_MATRIX.md")
     Copy-IfMissing (Join-Path $ScriptDir "templates/project/.ai-dev/RELEASE_LEDGER.jsonl") (Join-Path $aiDevDir "RELEASE_LEDGER.jsonl")
     Copy-IfMissing (Join-Path $ScriptDir "templates/project/.ai-dev/RUN_CARD.template.json") (Join-Path $aiDevDir "RUN_CARD.template.json")
     Copy-IfMissing (Join-Path $ScriptDir "templates/project/.ai-dev/BRANCH_REGISTRY.json") (Join-Path $aiDevDir "BRANCH_REGISTRY.json")

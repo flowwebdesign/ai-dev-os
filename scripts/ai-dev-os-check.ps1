@@ -59,7 +59,8 @@ Check-File "ACTIVE_STATE.md"
 Check-File "PROOF_REQUIREMENTS.md"
 Check-File "RELEASE_LEDGER.jsonl"
 
-if (Test-Path -LiteralPath (Join-Path $aiDevDir "PROOF_MATRIX.md")) {
+$proofMatrixPath = Join-Path $aiDevDir "PROOF_MATRIX.md"
+if ((Test-Path -LiteralPath $proofMatrixPath) -and ((Get-Item -LiteralPath $proofMatrixPath).Length -gt 0)) {
     Write-Host "PASS .ai-dev/PROOF_MATRIX.md"
 } else {
     Write-Host "WARN proof matrix missing"

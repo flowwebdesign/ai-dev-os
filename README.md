@@ -7,7 +7,7 @@ This repo is project-agnostic. It exists to make agents prove the basics before 
 ## What This Contains
 
 - `core/` - portable rules for truth, proof, release traceability, handoff quality, escalation, and known failure patterns.
-- `templates/project/.ai-dev/` - files to copy into any product repo to describe the current project, active runtime state, token-light memory index, proof requirements, branches, deployments, and release ledger.
+- `templates/project/.ai-dev/` - files to copy into any product repo to describe the current project, active runtime state, token-light memory index, generic proof matrix, proof requirements, branches, deployments, and release ledger.
 - `templates/codex/` and `templates/codex-home/` - reusable Codex project instructions, global bootstrap, and prompt starters for common lanes.
 - `skills/` - portable skill package/templates for truth gates, proof mapping, scope control, release traceability, project memory, and handoff writing.
 - `agents/` - role profiles for explorer, worker, reviewer, proof checker, and scribe agents.
@@ -23,9 +23,9 @@ This repo is project-agnostic. It exists to make agents prove the basics before 
 2. Initialise a project explicitly with `ai-dev-os init --profile serious --detect /path/to/project` or, in PowerShell, `cd C:\path\to\project` and then `& "$HOME\.ai-dev-os\bin\ai-dev-os.ps1" init -Profile serious -Detect`.
 3. If you are using the installer directly for project files, pass `./install.sh --project /path/to/project` or `.\install.ps1 -Project -TargetDir C:\path\to\project`.
 4. Read `.ai-dev/AI_MEMORY_INDEX.md` first, then fill in `.ai-dev/PROJECT_CONTEXT.md` and `.ai-dev/ACTIVE_STATE.md`.
-5. Add `.ai-dev/PROOF_REQUIREMENTS.md` entries for the app's real proof boundaries.
+5. Review `.ai-dev/PROOF_MATRIX.md`, then add `.ai-dev/PROOF_REQUIREMENTS.md` entries for the app's real proof boundaries.
 6. Add or adapt the Codex instructions from `templates/codex/AGENTS.md`.
-7. Use `core/TASK_CLASSIFIER.md` before starting work and `core/PROOF_MATRIX.md` before claiming success.
+7. Use `core/TASK_CLASSIFIER.md` before starting work and the project `.ai-dev/PROOF_MATRIX.md` before claiming success.
 8. Run `ai-dev-os check /path/to/project` after global install, or `scripts/ai-dev-os-check.sh /path/to/project` from this repo.
 
 ## CLI

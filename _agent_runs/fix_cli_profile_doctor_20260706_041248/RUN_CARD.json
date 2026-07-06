@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "run_id": "fix_cli_profile_doctor_20260706_041248",
+  "timestamp": "2026-07-06T04:12:48+02:00",
+  "actor": "Codex",
+  "repo": {
+    "path": "/home/fred/projects/ai-dev-os",
+    "remote": "https://github.com/flowwebdesign/ai-dev-os",
+    "branch": "feature/day1-working-control-layer",
+    "starting_commit": "9294370",
+    "dirty_tree": "pre-existing untracked snapshot artifacts preserved"
+  },
+  "scope": {
+    "title": "Fix CLI profile and doctor behavior",
+    "class": "CLI usability bugfix",
+    "target_runtime": "local Linux global install",
+    "identity": "local filesystem and git user",
+    "provider_mode": "no paid providers",
+    "stop_condition": "user transcript commands work without path parsing failure or home doctor STOP"
+  },
+  "changes": [
+    "parse init/attach --profile and --detect",
+    "write .ai-dev/CLI_PROFILE.md",
+    "make doctor global-safe outside project directories",
+    "avoid duplicate doctor summary lines",
+    "document profile/detect options"
+  ],
+  "checks": [
+    "rtk bash -n bin/ai-dev-os",
+    "rtk bash -n install.sh",
+    "rtk ./bin/ai-dev-os help",
+    "rtk ./install.sh /tmp/ai-dev-os-global-install-target --install-codex-home",
+    "rtk /home/fred/.ai-dev-os/bin/ai-dev-os doctor",
+    "rtk /home/fred/.ai-dev-os/bin/ai-dev-os init --profile serious --detect",
+    "rtk /home/fred/.ai-dev-os/bin/ai-dev-os check"
+  ],
+  "proof": {
+    "verified": [
+      "doctor from home returns SUMMARY WARN instead of SUMMARY STOP",
+      "init --profile serious --detect succeeds",
+      "CLI profile file is written",
+      "check succeeds after init with expected warnings"
+    ],
+    "partial": [
+      "PowerShell wrapper updated but not runtime-checked"
+    ],
+    "not_run": [
+      "MCP runtime/build"
+    ],
+    "blocked": []
+  },
+  "next_smallest_lane": "Expand --detect to infer package manager and runtime commands if needed."
+}

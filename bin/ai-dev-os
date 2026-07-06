@@ -28,13 +28,86 @@ usage() {
 Usage: ai-dev-os <command> [path]
 
 Commands:
-  init [path]      Install .ai-dev project files into path, default .
-  attach [path]    Alias for init
+  init [options] [path]
+                   Install .ai-dev project files into path, default .
+                   Options: --profile <name>, --detect
+  attach [options] [path]
+                   Alias for init
   check [path]     Check required .ai-dev files, default .
   doctor [path]    Check global install and project health, default .
   version          Print installed version
   help             Show this help
 EOF
+}
+
+parse_init_args() {
+  INIT_TARGET="."
+  INIT_PROFILE=""
+  INIT_DETECT=0
+
+  while [ "$#" -gt 0 ]; do
+    case "$1" in
+      --profile)
+        shift
+        if [ "$#" -eq 0 ] || [ -z "$1" ]; then
+          echo "STOP --profile requires a value" >&2
+          exit 1
+        fi
+        INIT_PROFILE="$1"
+        ;;
+      --detect)
+        INIT_DETECT=1
+        ;;
+      -h|--help)
+        usage
+        exit 0
+        ;;
+      --)
+        shift
+        if [ "$#" -gt 0 ]; then
+          INIT_TARGET="$1"
+        fi
+        ;;
+      -*)
+        echo "STOP unknown init option: $1" >&2
+        exit 1
+        ;;
+      *)
+        INIT_TARGET="$1"
+        ;;
+    esac
+    shift || true
+  done
+}
+
+write_cli_profile() {
+  target="$1"
+  profile="$2"
+  detect="$3"
+
+  if [ -z "$profile" ] && [ "$detect" -ne 1 ]; then
+    return
+  fi
+
+  ai_dev_dir="$target/.ai-dev"
+  if [ ! -d "$ai_dev_dir" ]; then
+    echo "STOP missing $ai_dev_dir after init" >&2
+    exit 1
+  fi
+
+  branch="$(git -C "$target" branch --show-current 2>/dev/null || true)"
+  remote="$(git -C "$target" remote get-url origin 2>/dev/null || true)"
+
+  {
+    echo "# AI Dev OS CLI Profile"
+    echo
+    echo "- Profile: ${profile:-default}"
+    echo "- Detect requested: $detect"
+    echo "- Git branch: ${branch:-unknown}"
+    echo "- Git remote: ${remote:-none}"
+  } > "$ai_dev_dir/CLI_PROFILE.md"
+
+  echo "create $ai_dev_dir/CLI_PROFILE.md"
 }
 
 cmd="${1:-help}"
@@ -51,9 +124,10 @@ case "$cmd" in
     ;;
   init|attach)
     shift || true
-    target="${1:-.}"
+    parse_init_args "$@"
     source_dir="$(find_source_dir)"
-    "$source_dir/install.sh" "$target"
+    "$source_dir/install.sh" "$INIT_TARGET"
+    write_cli_profile "$INIT_TARGET" "$INIT_PROFILE" "$INIT_DETECT"
     ;;
   check)
     shift || true
@@ -105,12 +179,18 @@ case "$cmd" in
       exit 1
     fi
 
+    if [ ! -d "$target/.git" ] && [ ! -d "$target/.ai-dev" ]; then
+      echo "WARN project check skipped: target is not a git repo and has no .ai-dev"
+      echo "SUMMARY WARN"
+      exit 0
+    fi
+
     check_output="$("$0" check "$target" 2>&1)" || {
-      printf '%s\n' "$check_output"
+      printf '%s\n' "$check_output" | sed '/^SUMMARY /d'
       echo "SUMMARY STOP"
       exit 1
     }
-    printf '%s\n' "$check_output"
+    printf '%s\n' "$check_output" | sed '/^SUMMARY /d'
     if printf '%s\n' "$check_output" | grep -q "SUMMARY WARN"; then
       warn=1
     fi

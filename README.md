@@ -38,6 +38,12 @@ After global install, use:
 
 `attach` is an alias for `init`.
 
+`init` and `attach` also accept `--profile <name>` and `--detect`:
+
+```sh
+ai-dev-os init --profile serious --detect /path/to/project
+```
+
 ## Codex Home Bootstrap
 
 Install a short global Codex instruction file with:

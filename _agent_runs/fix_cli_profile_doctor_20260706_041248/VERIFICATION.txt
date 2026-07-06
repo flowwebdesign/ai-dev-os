@@ -1,0 +1,36 @@
+Repo proof:
+- rtk pwd: /home/fred/projects/ai-dev-os
+- rtk git branch --show-current: feature/day1-working-control-layer
+- rtk git remote -v: origin https://github.com/flowwebdesign/ai-dev-os
+- rtk git log --oneline -n 1 at start: 9294370 add ai dev os init check doctor cli
+- rtk git status --short at start: only pre-existing untracked snapshot artifacts.
+
+Issue reproduced from user transcript:
+- ai-dev-os doctor from /home/fred treated home as a project and produced SUMMARY STOP.
+- ai-dev-os init --profile serious --detect treated --profile as the target path.
+
+Fix:
+- bin/ai-dev-os parses init/attach options: --profile <name> and --detect.
+- init/attach writes .ai-dev/CLI_PROFILE.md when profile or detect is supplied.
+- doctor skips project check with SUMMARY WARN when target is not a git repo and has no .ai-dev.
+- doctor now emits one final SUMMARY line.
+- bin/ai-dev-os.ps1 was updated for matching option semantics, but runtime was not checked because pwsh is unavailable.
+- README documents init --profile serious --detect.
+
+Checks run:
+- rtk bash -n bin/ai-dev-os: pass.
+- rtk bash -n install.sh: pass.
+- rtk ./bin/ai-dev-os help: pass.
+- rtk ./install.sh /tmp/ai-dev-os-global-install-target --install-codex-home: pass.
+- rtk /home/fred/.ai-dev-os/bin/ai-dev-os doctor from /home/fred: SUMMARY WARN, exit 0, project check skipped.
+- rtk /home/fred/.ai-dev-os/bin/ai-dev-os init --profile serious --detect from /tmp/ai-dev-os-profile-test: pass.
+- rtk /home/fred/.ai-dev-os/bin/ai-dev-os check from /tmp/ai-dev-os-profile-test: SUMMARY WARN, exit 0.
+- rtk sed -n 1,80p .ai-dev/CLI_PROFILE.md: profile serious and detect flag recorded.
+- rtk /home/fred/.ai-dev-os/bin/ai-dev-os help: shows profile/detect options.
+
+Not run:
+- MCP runtime/build.
+- PowerShell runtime/parse because pwsh is not installed.
+
+Risk:
+- Detect currently records lightweight git branch/remote facts only. It does not infer package manager or app runtime yet.

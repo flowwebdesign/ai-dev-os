@@ -10,5 +10,6 @@
 8. Agent roles.
 9. Release traceability.
 10. Selling this as a KratosLab service.
+11. Profile matrix proof.
 
 Exercise: pick one current project and write the first three stop conditions that would have prevented its last AI mistake.

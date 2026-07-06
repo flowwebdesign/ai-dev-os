@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "run_id": "profile_matrix_learning_capture_20260706_055420",
+  "timestamp": "2026-07-06T05:54:20+02:00",
+  "actor": "Codex",
+  "repo": {
+    "path": "/home/fred/projects/ai-dev-os",
+    "remote": "https://github.com/flowwebdesign/ai-dev-os",
+    "branch": "feature/day1-working-control-layer",
+    "starting_commit": "6363215",
+    "dirty_tree": "pre-existing untracked snapshot artifacts preserved"
+  },
+  "scope": {
+    "title": "AI_DEV_OS_PROFILE_MATRIX_AND_LEARNING_CAPTURE",
+    "class": "profile proof and learning capture",
+    "target_runtime": "local Linux global CLI",
+    "identity": "local filesystem and git user",
+    "provider_mode": "no paid providers",
+    "stop_condition": "minimal, standard, serious, and serious detect profiles proved and learning material captured"
+  },
+  "profile_matrix": [
+    {
+      "name": "minimal",
+      "path": "/tmp/ai-dev-os-profile-matrix-20260706_055420/minimal",
+      "detect": false,
+      "check": "SUMMARY WARN",
+      "doctor": "SUMMARY WARN"
+    },
+    {
+      "name": "standard",
+      "path": "/tmp/ai-dev-os-profile-matrix-20260706_055420/standard",
+      "detect": false,
+      "check": "SUMMARY WARN",
+      "doctor": "SUMMARY WARN"
+    },
+    {
+      "name": "serious",
+      "path": "/tmp/ai-dev-os-profile-matrix-20260706_055420/serious",
+      "detect": false,
+      "check": "SUMMARY WARN",
+      "doctor": "SUMMARY WARN"
+    },
+    {
+      "name": "serious",
+      "path": "/tmp/ai-dev-os-profile-matrix-20260706_055420/serious-detect",
+      "detect": true,
+      "check": "SUMMARY WARN",
+      "doctor": "SUMMARY WARN"
+    }
+  ],
+  "changes": [
+    "added profile matrix course lesson",
+    "updated course map",
+    "updated learning log",
+    "created proof folder"
+  ],
+  "checks": [
+    "rtk ./install.sh /tmp/ai-dev-os-global-install-target --install-codex-home",
+    "rtk sh -c export PATH and ai-dev-os version/doctor/help",
+    "rtk git init for four temp repos",
+    "rtk ai-dev-os init for minimal, standard, serious, serious detect",
+    "rtk ai-dev-os check for four temp repos",
+    "rtk ai-dev-os doctor for four temp repos",
+    "rtk sed -n 1,80p .ai-dev/CLI_PROFILE.md for four temp repos"
+  ],
+  "proof": {
+    "verified": [
+      "installed CLI version matches starting commit",
+      "minimal profile writes expected profile marker",
+      "standard profile writes expected profile marker",
+      "serious profile writes expected profile marker",
+      "serious detect writes serious profile marker with detect requested",
+      "all four profile repos pass check and doctor with expected warnings"
+    ],
+    "partial": [],
+    "not_run": [
+      "MCP runtime/build",
+      "PowerShell runtime check"
+    ],
+    "blocked": []
+  },
+  "next_smallest_lane": "Define behavioral differences for minimal, standard, and serious profiles if they should do more than record profile metadata."
+}

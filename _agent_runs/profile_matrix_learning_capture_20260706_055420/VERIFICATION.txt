@@ -1,0 +1,48 @@
+Repo proof:
+- rtk pwd: /home/fred/projects/ai-dev-os
+- rtk git status --short: only pre-existing untracked snapshot artifacts at start.
+- rtk git branch --show-current: feature/day1-working-control-layer
+- rtk git remote -v: origin https://github.com/flowwebdesign/ai-dev-os
+- rtk git log --oneline -n 1: 6363215 fix ai dev os cli profile doctor behavior
+
+Installed CLI proof:
+- /home/fred/.ai-dev-os/bin/ai-dev-os exists.
+- /home/fred/.codex/AGENTS.md exists.
+- rtk /home/fred/.ai-dev-os/bin/ai-dev-os version: 6363215
+- rtk ./install.sh /tmp/ai-dev-os-global-install-target --install-codex-home: pass.
+- PATH smoke via rtk sh -c 'export PATH="$HOME/.ai-dev-os/bin:$PATH"; ai-dev-os version; ai-dev-os doctor; ai-dev-os help': pass.
+
+Profile matrix temp root:
+- /tmp/ai-dev-os-profile-matrix-20260706_055420
+
+Profile matrix commands:
+- minimal: rtk /home/fred/.ai-dev-os/bin/ai-dev-os init --profile minimal
+- standard: rtk /home/fred/.ai-dev-os/bin/ai-dev-os init --profile standard
+- serious: rtk /home/fred/.ai-dev-os/bin/ai-dev-os init --profile serious
+- serious detect: rtk /home/fred/.ai-dev-os/bin/ai-dev-os init --profile serious --detect
+
+Profile matrix result:
+- All four temp repos were initialized as git repos.
+- All four init commands exited 0.
+- All four created .ai-dev/AI_MEMORY_INDEX.md and .ai-dev/CLI_PROFILE.md.
+- All four ai-dev-os check commands exited 0 with SUMMARY WARN.
+- All four ai-dev-os doctor commands exited 0 with SUMMARY WARN.
+
+Readback:
+- minimal CLI_PROFILE.md: Profile minimal, Detect requested 0.
+- standard CLI_PROFILE.md: Profile standard, Detect requested 0.
+- serious CLI_PROFILE.md: Profile serious, Detect requested 0.
+- serious-detect CLI_PROFILE.md: Profile serious, Detect requested 1.
+
+Expected warnings:
+- .ai-dev/ is untracked in each temporary repo because the smoke test does not commit temp files.
+- .ai-dev/PROOF_MATRIX.md is optional and missing, so check reports WARN.
+
+Learning capture:
+- course/00-course-map.md updated with profile matrix proof.
+- course/11-profile-matrix-proof.md added.
+- learning-log/2026-07-06.md updated with profile matrix and CLI learning notes.
+
+Not run:
+- MCP runtime/build, per request.
+- PowerShell runtime check, because pwsh is not installed.

@@ -1,0 +1,45 @@
+{
+  "run_id": "windows_installer_scope_fix_20260706_113130",
+  "title": "FIX_WINDOWS_INSTALLER_SCOPE_SEPARATION",
+  "repo": "C:\\Users\\floww\\Documents\\ai-dev-os",
+  "remote": "https://github.com/flowwebdesign/ai-dev-os",
+  "branch": "feature/day1-working-control-layer",
+  "start_commit": "479060c",
+  "scope": "Separate global install from project init for Windows installer, mirror Bash scope behavior, clean bug-created source .ai-dev, update docs and learning capture.",
+  "stop_condition": "Stop if remote is not flowwebdesign/ai-dev-os, if cleanup target contains tracked files, or if Study_master init would be required.",
+  "provider_cost_mode": "none",
+  "runtime_target": "local Windows installer and installed local CLI",
+  "identity_auth_state": "No UI or API writes. GitHub push attempted only after local commit if authenticated.",
+  "verified": [
+    "remote matched flowwebdesign/ai-dev-os",
+    "source .ai-dev was untracked and removed",
+    "install.ps1 -InstallCodexHome did not recreate source .ai-dev",
+    "global CLI and Codex AGENTS exist",
+    "installed CLI version returned 479060c during smoke",
+    "installed doctor returns SUMMARY WARN without project init",
+    "Study_master doctor/check were dry only and did not create .ai-dev"
+  ],
+  "partial": [
+    "Git Bash syntax check for install.sh passed; Linux runtime was not executed"
+  ],
+  "not_run": [
+    "MCP runtime build",
+    "Study_master init",
+    "Linux runtime install smoke"
+  ],
+  "blocked": [],
+  "commands_run": [
+    "rtk pwd",
+    "rtk git status --short",
+    "rtk git branch --show-current",
+    "rtk git remote get-url origin",
+    "rtk git log --oneline -n 1",
+    "rtk powershell -NoProfile -ExecutionPolicy Bypass -File .\\install.ps1 -InstallCodexHome",
+    "rtk powershell -NoProfile -ExecutionPolicy Bypass -File C:\\Users\\floww\\.ai-dev-os\\bin\\ai-dev-os.ps1 version",
+    "rtk powershell -NoProfile -ExecutionPolicy Bypass -File C:\\Users\\floww\\.ai-dev-os\\bin\\ai-dev-os.ps1 help",
+    "rtk powershell -NoProfile -ExecutionPolicy Bypass -File C:\\Users\\floww\\.ai-dev-os\\bin\\ai-dev-os.ps1 doctor",
+    "rtk powershell -NoProfile -ExecutionPolicy Bypass -File C:\\Users\\floww\\.ai-dev-os\\bin\\ai-dev-os.ps1 doctor .",
+    "rtk powershell -NoProfile -ExecutionPolicy Bypass -File C:\\Users\\floww\\.ai-dev-os\\bin\\ai-dev-os.ps1 check .",
+    "rtk powershell -NoProfile -Command \"& 'C:\\Program Files\\Git\\bin\\bash.exe' -n install.sh\""
+  ]
+}

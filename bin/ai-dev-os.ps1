@@ -1,5 +1,10 @@
 param(
+    [Parameter(Position = 0)]
     [string]$Command = "help",
+    [Parameter(Position = 1)]
+    [string]$TargetArg = "",
+    [string]$Profile = "",
+    [switch]$Detect,
     [Parameter(ValueFromRemainingArguments = $true)]
     [string[]]$RemainingArgs
 )
@@ -9,7 +14,7 @@ $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $AiDevOsHome = Split-Path -Parent $ScriptDir
 
 function Find-SourceDir {
-    $localInstall = Join-Path $AiDevOsHome "install.sh"
+    $localInstall = Join-Path $AiDevOsHome "install.ps1"
     if (Test-Path -LiteralPath $localInstall) {
         return $AiDevOsHome
     }
@@ -31,7 +36,8 @@ function Show-Help {
     Write-Host "Commands:"
     Write-Host "  init [options] [path]"
     Write-Host "                   Install .ai-dev project files into path, default ."
-    Write-Host "                   Options: --profile <name>, --detect"
+    Write-Host "                   Options: -Profile <name>, -Detect"
+    Write-Host "                   Also accepts: --profile <name>, --detect"
     Write-Host "  attach [options] [path]"
     Write-Host "                   Alias for init"
     Write-Host "  check [path]     Check required .ai-dev files, default ."
@@ -40,9 +46,21 @@ function Show-Help {
     Write-Host "  help             Show this help"
 }
 
+function Get-CommandArgs {
+    $items = @()
+    if ($TargetArg) {
+        $items += $TargetArg
+    }
+    if ($RemainingArgs) {
+        $items += $RemainingArgs
+    }
+    return @($items)
+}
+
 function Get-TargetArg {
-    if ($RemainingArgs -and $RemainingArgs.Count -gt 0) {
-        return $RemainingArgs[0]
+    $args = Get-CommandArgs
+    if ($args -and $args.Count -gt 0) {
+        return $args[0]
     }
     return "."
 }
@@ -56,31 +74,28 @@ function Parse-InitArgs {
         Detect = $false
     }
 
-    for ($i = 0; $i -lt $Args.Count; $i++) {
-        switch ($Args[$i]) {
-            "--profile" {
-                $i++
-                if ($i -ge $Args.Count -or -not $Args[$i]) {
-                    Write-Host "STOP --profile requires a value"
-                    exit 1
-                }
-                $result.Profile = $Args[$i]
-            }
-            "--detect" {
-                $result.Detect = $true
-            }
-            { $_ -in @("-h", "--help") } {
-                Show-Help
-                exit 0
-            }
-            { $_.StartsWith("-") } {
-                Write-Host "STOP unknown init option: $_"
+    $i = 0
+    while ($i -lt $Args.Count) {
+        $arg = $Args[$i]
+        if ($arg -in @("--profile", "-Profile")) {
+            $i++
+            if ($i -ge $Args.Count -or -not $Args[$i]) {
+                Write-Host "STOP -Profile requires a value"
                 exit 1
             }
-            default {
-                $result.Target = $Args[$i]
-            }
+            $result.Profile = $Args[$i]
+        } elseif ($arg -in @("--detect", "-Detect")) {
+            $result.Detect = $true
+        } elseif ($arg -in @("-h", "--help", "-Help")) {
+            Show-Help
+            exit 0
+        } elseif ($arg.StartsWith("-")) {
+            Write-Host "STOP unknown init option: $arg"
+            exit 1
+        } else {
+            $result.Target = $arg
         }
+        $i++
     }
 
     return $result
@@ -103,8 +118,18 @@ function Write-CliProfile {
         exit 1
     }
 
-    $branch = git -C $Target branch --show-current 2>$null
-    $remote = git -C $Target remote get-url origin 2>$null
+    $branch = try {
+        $value = & git -C $Target branch --show-current 2>$null
+        if ($LASTEXITCODE -eq 0) { $value } else { "" }
+    } catch {
+        ""
+    }
+    $remote = try {
+        $value = & git -C $Target remote get-url origin 2>$null
+        if ($LASTEXITCODE -eq 0) { $value } else { "" }
+    } catch {
+        ""
+    }
     if (-not $branch) { $branch = "unknown" }
     if (-not $remote) { $remote = "none" }
     if (-not $Profile) { $Profile = "default" }
@@ -136,9 +161,15 @@ switch ($Command) {
         break
     }
     { $_ -in @("init", "attach") } {
-        $parsed = Parse-InitArgs -Args $RemainingArgs
+        $parsed = Parse-InitArgs -Args (Get-CommandArgs)
+        if ($Profile) {
+            $parsed.Profile = $Profile
+        }
+        if ($Detect) {
+            $parsed.Detect = $true
+        }
         $sourceDir = Find-SourceDir
-        & (Join-Path $sourceDir "install.ps1") -TargetDir $parsed.Target
+        & (Join-Path $sourceDir "install.ps1") -Project -TargetDir $parsed.Target
         Write-CliProfile -Target $parsed.Target -Profile $parsed.Profile -Detect $parsed.Detect
         break
     }
@@ -147,11 +178,12 @@ switch ($Command) {
         $installedCheck = Join-Path $AiDevOsHome "bin/ai-dev-os-check.ps1"
         if (Test-Path -LiteralPath $installedCheck) {
             & $installedCheck -TargetDir $TargetDir
+            exit $LASTEXITCODE
         } else {
             $sourceDir = Find-SourceDir
             & (Join-Path $sourceDir "scripts/ai-dev-os-check.ps1") -TargetDir $TargetDir
+            exit $LASTEXITCODE
         }
-        break
     }
     "doctor" {
         $TargetDir = Get-TargetArg
@@ -183,8 +215,8 @@ switch ($Command) {
         }
         Write-Host "PASS target=$TargetDir"
 
-        if (-not (Test-Path -LiteralPath (Join-Path $TargetDir ".git")) -and -not (Test-Path -LiteralPath (Join-Path $TargetDir ".ai-dev"))) {
-            Write-Host "WARN project check skipped: target is not a git repo and has no .ai-dev"
+        if (-not (Test-Path -LiteralPath (Join-Path $TargetDir ".ai-dev"))) {
+            Write-Host "WARN project check skipped: target has no .ai-dev; run init explicitly when this is a project"
             Write-Host "SUMMARY WARN"
             exit 0
         }

@@ -1,0 +1,47 @@
+Initial truth:
+- rtk pwd: failed because Windows PATH has no pwd binary; reran path proof through RTK-wrapped PowerShell.
+- repo path: C:\Users\floww\Documents\ai-dev-os
+- remote: https://github.com/flowwebdesign/ai-dev-os
+- branch: feature/day1-working-control-layer
+- start commit: 479060c capture profile matrix learning proof
+- dirty state at start: ?? .ai-dev/
+
+Bug-created source .ai-dev:
+- Test-Path .ai-dev: True before fix.
+- git status --short .ai-dev: ?? .ai-dev/
+- git ls-files .ai-dev: no tracked files.
+- Cleanup command removed only C:\Users\floww\Documents\ai-dev-os\.ai-dev after exact path and tracked-file checks.
+- Final source check: SOURCE_AI_DEV_FINAL=False.
+
+Installer smoke:
+- rtk powershell -NoProfile -ExecutionPolicy Bypass -File .\install.ps1 -InstallCodexHome: pass.
+- Output sections included GLOBAL INSTALL, CODEX HOME INSTALL, PROJECT INIT skipped.
+- SOURCE_AI_DEV_AFTER_REINSTALL=False.
+- HOME_AI_DEV_OS_BIN=True.
+- HOME_CODEX_AGENTS=True.
+- Installed CLI version: 479060c.
+- Installed CLI help: pass.
+- Installed CLI doctor from source repo: SUMMARY WARN; skipped project check because .ai-dev is absent.
+
+Project init smoke:
+- Direct installer project init into C:\Users\floww\AppData\Local\Temp\ai-dev-os-installer-project-direct-codex-20260706a created .ai-dev/AI_MEMORY_INDEX.md.
+- PowerShell CLI init from temp target with `init -Profile serious -Detect` created .ai-dev and CLI_PROFILE.md.
+- CLI profile readback: Profile serious, Detect requested True, Git branch unknown, Git remote none.
+
+Bash installer:
+- WSL bash failed because /bin/bash is missing.
+- Git Bash exists at C:\Program Files\Git\bin\bash.exe.
+- Git Bash syntax check `bash.exe -n install.sh`: pass.
+
+Study_master dry checks:
+- STUDY_MASTER_EXISTS=True.
+- STUDY_MASTER_AI_DEV_EXISTS=False before dry checks.
+- doctor .: SUMMARY WARN; project check skipped because .ai-dev is absent.
+- check .: exit 1 with SUMMARY STOP.
+- check . reported remote=none, branch=lane/chrome-store-beta-extension-package, existing dirty tree, and missing required .ai-dev files.
+- STUDY_MASTER_AI_DEV_AFTER_DRY=False.
+
+Not run:
+- Study_master init was not run.
+- MCP runtime was not built.
+- Linux runtime smoke was not run.

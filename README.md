@@ -19,12 +19,14 @@ This repo is project-agnostic. It exists to make agents prove the basics before 
 
 ## First Use In A Project
 
-1. Run `./install.sh /path/to/project` or `.\install.ps1 -TargetDir C:\path\to\project`.
-2. Read `.ai-dev/AI_MEMORY_INDEX.md` first, then fill in `.ai-dev/PROJECT_CONTEXT.md` and `.ai-dev/ACTIVE_STATE.md`.
-3. Add `.ai-dev/PROOF_REQUIREMENTS.md` entries for the app's real proof boundaries.
-4. Add or adapt the Codex instructions from `templates/codex/AGENTS.md`.
-5. Use `core/TASK_CLASSIFIER.md` before starting work and `core/PROOF_MATRIX.md` before claiming success.
-6. Run `ai-dev-os check /path/to/project` after global install, or `scripts/ai-dev-os-check.sh /path/to/project` from this repo.
+1. Install the global CLI and Codex bootstrap with `./install.sh --install-codex-home` or `.\install.ps1 -InstallCodexHome`.
+2. Initialise a project explicitly with `ai-dev-os init --profile serious --detect /path/to/project` or, in PowerShell, `cd C:\path\to\project` and then `& "$HOME\.ai-dev-os\bin\ai-dev-os.ps1" init -Profile serious -Detect`.
+3. If you are using the installer directly for project files, pass `./install.sh --project /path/to/project` or `.\install.ps1 -Project -TargetDir C:\path\to\project`.
+4. Read `.ai-dev/AI_MEMORY_INDEX.md` first, then fill in `.ai-dev/PROJECT_CONTEXT.md` and `.ai-dev/ACTIVE_STATE.md`.
+5. Add `.ai-dev/PROOF_REQUIREMENTS.md` entries for the app's real proof boundaries.
+6. Add or adapt the Codex instructions from `templates/codex/AGENTS.md`.
+7. Use `core/TASK_CLASSIFIER.md` before starting work and `core/PROOF_MATRIX.md` before claiming success.
+8. Run `ai-dev-os check /path/to/project` after global install, or `scripts/ai-dev-os-check.sh /path/to/project` from this repo.
 
 ## CLI
 
@@ -44,21 +46,32 @@ After global install, use:
 ai-dev-os init --profile serious --detect /path/to/project
 ```
 
+PowerShell:
+
+```powershell
+cd C:\path\to\project
+& "$HOME\.ai-dev-os\bin\ai-dev-os.ps1" init -Profile serious -Detect
+```
+
 ## Codex Home Bootstrap
 
 Install a short global Codex instruction file with:
 
 ```sh
 ./install.sh --install-codex-home
+./install.sh --install-codex-home --force
 ```
 
 PowerShell:
 
 ```powershell
 .\install.ps1 -InstallCodexHome
+.\install.ps1 -InstallCodexHome -Force
 ```
 
-The installers create `~/.ai-dev-os` with the CLI and checkers, create `~/.codex` if missing, and copy `templates/codex-home/AGENTS.md` to `~/.codex/AGENTS.md`. Existing Codex AGENTS files are skipped unless `--force` or `-Force` is supplied; forced installs create a backup first.
+The global install creates `~/.ai-dev-os` with the CLI and checkers, creates `~/.codex` if missing, and copies `templates/codex-home/AGENTS.md` to `~/.codex/AGENTS.md`. Existing Codex AGENTS files are skipped unless `--force` or `-Force` is supplied; forced installs create a backup first.
+
+Global install does not create project `.ai-dev` files. Project init only happens through `ai-dev-os init`, `./install.sh --project`, or `.\install.ps1 -Project`.
 
 ## Non-Negotiable Pattern
 

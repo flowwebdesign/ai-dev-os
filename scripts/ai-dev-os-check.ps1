@@ -18,14 +18,32 @@ function Check-File {
     }
 }
 
+function Get-GitLines {
+    param([string[]]$GitArgs)
+
+    try {
+        $output = & git -C $TargetDir @GitArgs 2>$null
+        if ($LASTEXITCODE -ne 0 -or -not $output) {
+            return @()
+        }
+        return @($output)
+    } catch {
+        return @()
+    }
+}
+
 if (-not (Test-Path -LiteralPath (Join-Path $TargetDir ".git"))) {
     Write-Host "STOP git repo not found at $TargetDir"
     $stop = $true
 } else {
     Write-Host "PASS git repo found"
-    Write-Host "INFO remote=$(git -C $TargetDir remote get-url origin 2>$null)"
-    Write-Host "INFO branch=$(git -C $TargetDir branch --show-current 2>$null)"
-    $dirty = git -C $TargetDir status --short 2>$null
+    $remote = Get-GitLines @("remote", "get-url", "origin")
+    $branch = Get-GitLines @("branch", "--show-current")
+    if (-not $remote) { $remote = @("none") }
+    if (-not $branch) { $branch = @("unknown") }
+    Write-Host "INFO remote=$($remote -join ' ')"
+    Write-Host "INFO branch=$($branch -join ' ')"
+    $dirty = Get-GitLines @("status", "--short")
     if ($dirty) {
         Write-Host "WARN dirty tree"
         $dirty

@@ -126,7 +126,7 @@ case "$cmd" in
     shift || true
     parse_init_args "$@"
     source_dir="$(find_source_dir)"
-    "$source_dir/install.sh" "$INIT_TARGET"
+    "$source_dir/install.sh" --project "$INIT_TARGET"
     write_cli_profile "$INIT_TARGET" "$INIT_PROFILE" "$INIT_DETECT"
     ;;
   check)
@@ -179,8 +179,8 @@ case "$cmd" in
       exit 1
     fi
 
-    if [ ! -d "$target/.git" ] && [ ! -d "$target/.ai-dev" ]; then
-      echo "WARN project check skipped: target is not a git repo and has no .ai-dev"
+    if [ ! -d "$target/.ai-dev" ]; then
+      echo "WARN project check skipped: target has no .ai-dev; run init explicitly when this is a project"
       echo "SUMMARY WARN"
       exit 0
     fi

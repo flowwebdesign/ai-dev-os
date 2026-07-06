@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "ai-dev-os-project-state": {
+      "command": "node",
+      "args": ["mcp/project-state-server/dist/index.js"],
+      "cwd": "/path/to/project"
+    }
+  }
+}

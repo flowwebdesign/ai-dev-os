@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "run_id": "ai_dev_os_working_control_layer_20260706_032423",
+  "timestamp": "2026-07-06T03:24:23+02:00",
+  "actor": "Codex",
+  "repo": {
+    "path": "/home/fred/projects/ai-dev-os",
+    "remote": "https://github.com/flowwebdesign/ai-dev-os",
+    "branch": "feature/day1-working-control-layer",
+    "starting_commit": "3b273df",
+    "dirty_tree": "tracked files clean at start; pre-existing untracked snapshots preserved"
+  },
+  "scope": {
+    "title": "AI_DEV_OS_FULL_DAY_BOOTSTRAP_AUDIT_AND_UPGRADE",
+    "class": "documentation, templates, scripts, MCP skeleton",
+    "target_runtime": "local repo",
+    "identity": "local filesystem and git user",
+    "provider_mode": "no paid providers",
+    "stop_condition": "working control-layer templates, verification, run card, and report created"
+  },
+  "changes": [
+    "memory index contract and templates",
+    "Codex home bootstrap and installer flags",
+    "skill improvements and new skills",
+    "standalone hook templates",
+    "minimal MCP project-state starter",
+    "project-management templates",
+    "course and learning log",
+    "checker scripts",
+    "proof run folder"
+  ],
+  "checks": [
+    "rtk bash -n install.sh",
+    "rtk bash -n hooks/templates/preflight.sh",
+    "rtk bash -n hooks/templates/stop_check.sh",
+    "rtk bash -n hooks/templates/evidence_capture.sh",
+    "rtk bash -n hooks/install-hooks.sh",
+    "rtk bash -n scripts/ai-dev-os-check.sh",
+    "rtk node -e JSON.parse(...)",
+    "rtk rg key phrase checks"
+  ],
+  "proof": {
+    "verified": [
+      "repo path, remote, branch, default branch, and starting dirty state",
+      "shell script syntax",
+      "JSON syntax",
+      "expected files exist",
+      "key documentation phrases present"
+    ],
+    "partial": [
+      "MCP TypeScript starter not built because dependencies were not installed"
+    ],
+    "smoke": [],
+    "not_run": [
+      "shellcheck",
+      "PowerShell parse",
+      "npm install",
+      "npm run build"
+    ],
+    "blocked": []
+  },
+  "evidence": [
+    "_agent_runs/ai_dev_os_working_control_layer_20260706_032423/AUDIT.md",
+    "_agent_runs/ai_dev_os_working_control_layer_20260706_032423/VERIFICATION.txt",
+    "_agent_runs/ai_dev_os_working_control_layer_20260706_032423/FILE_INDEX.md"
+  ],
+  "next_smallest_lane": "Install into a throwaway example project and run ai-dev-os-check end to end."
+}

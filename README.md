@@ -1,26 +1,46 @@
 # AI Dev OS
 
-Reusable operating rules, templates, skills, agent roles, and future hook/MCP plans for AI-assisted software development.
+Reusable operating rules, templates, skills, agent roles, practical hook templates, and a minimal MCP starter for AI-assisted software development.
 
 This repo is project-agnostic. It exists to make agents prove the basics before changing code, keep scope tight, map claims to evidence, and hand off work without turning stale summaries into truth.
 
 ## What This Contains
 
 - `core/` - portable rules for truth, proof, release traceability, handoff quality, escalation, and known failure patterns.
-- `templates/project/.ai-dev/` - files to copy into any product repo to describe the current project, active runtime state, proof requirements, branches, deployments, and release ledger.
-- `templates/codex/` - reusable Codex instructions and prompt starters for common lanes.
-- `skills/` - starter skill definitions for truth gates, proof mapping, and handoff writing.
+- `templates/project/.ai-dev/` - files to copy into any product repo to describe the current project, active runtime state, token-light memory index, proof requirements, branches, deployments, and release ledger.
+- `templates/codex/` and `templates/codex-home/` - reusable Codex project instructions, global bootstrap, and prompt starters for common lanes.
+- `skills/` - portable skill package/templates for truth gates, proof mapping, scope control, release traceability, project memory, and handoff writing.
 - `agents/` - role profiles for explorer, worker, reviewer, proof checker, and scribe agents.
-- `mcp/` and `hooks/` - placeholders for later enforcement and project-state tooling.
+- `mcp/` and `hooks/` - runnable starter scripts and documented integration points for enforcement and project-state tooling.
+- `project-management/` - templates for active state, decisions, risks, progress, reviews, and run cards.
+- `course/` and `learning-log/` - learning material that explains the system while it is built.
 - `rules/` - compact default rules that can be imported into agent systems.
+- `scripts/` - lightweight checks for installed project templates.
 
 ## First Use In A Project
 
-1. Copy `templates/project/.ai-dev/` into the target repo.
-2. Fill in `.ai-dev/PROJECT_CONTEXT.md` and `.ai-dev/ACTIVE_STATE.md`.
+1. Run `./install.sh /path/to/project` or `.\install.ps1 -TargetDir C:\path\to\project`.
+2. Read `.ai-dev/AI_MEMORY_INDEX.md` first, then fill in `.ai-dev/PROJECT_CONTEXT.md` and `.ai-dev/ACTIVE_STATE.md`.
 3. Add `.ai-dev/PROOF_REQUIREMENTS.md` entries for the app's real proof boundaries.
 4. Add or adapt the Codex instructions from `templates/codex/AGENTS.md`.
 5. Use `core/TASK_CLASSIFIER.md` before starting work and `core/PROOF_MATRIX.md` before claiming success.
+6. Run `scripts/ai-dev-os-check.sh /path/to/project` to check the installed control files.
+
+## Codex Home Bootstrap
+
+Install a short global Codex instruction file with:
+
+```sh
+./install.sh --install-codex-home
+```
+
+PowerShell:
+
+```powershell
+.\install.ps1 -InstallCodexHome
+```
+
+The installers create `~/.codex` if missing and copy `templates/codex-home/AGENTS.md` to `~/.codex/AGENTS.md`. Existing files are skipped unless `--force` or `-Force` is supplied; forced installs create a backup first.
 
 ## Non-Negotiable Pattern
 
@@ -36,4 +56,4 @@ Every meaningful claim needs evidence across the relevant boundary: action, API 
 
 ## Status
 
-This is a first usable bootstrap. The hooks and MCP server are planned as future enforcement layers; today's value is the portable structure, templates, rules, and proof language.
+This is now a working bootstrap. Hooks are safe standalone scripts that can be run manually while exact Codex hook integration remains version-dependent. The MCP project-state server is a minimal TypeScript starter that can be installed later. Skills are portable skill package/templates unless local Codex documentation proves an auto-load location for a specific environment.

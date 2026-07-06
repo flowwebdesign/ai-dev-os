@@ -1,0 +1,22 @@
+Verified:
+- rtk git status --short showed no tracked diffs at start and preserved pre-existing untracked snapshots.
+- rtk git remote -v showed origin https://github.com/flowwebdesign/ai-dev-os.
+- rtk git symbolic-ref refs/remotes/origin/HEAD showed refs/remotes/origin/bootstrap/portable-ai-dev-os.
+- rtk bash -n passed for install.sh, hook shell scripts, hook installer, and ai-dev-os-check.sh.
+- rtk node -e JSON.parse passed for MCP package.json, tsconfig.json, MCP example config, run-card schemas, run-card template, and branch registry.
+- Bounded expected-file listing found the new memory, Codex home, hook, MCP, project-management, course, learning-log, and checker files.
+- Key phrase checks found AI_MEMORY_INDEX.md, Codex Home Bootstrap, truth gate, proof matrix, run card, MCP, and hooks.
+- rtk hooks/templates/stop_check.sh passed against this run folder.
+
+Partial or smoke only:
+- MCP TypeScript source is syntactically coherent by inspection and JSON manifests validate, but dependencies were not installed and TypeScript build was not run.
+
+Not run:
+- shellcheck: not installed.
+- PowerShell parse checks: pwsh not installed.
+- npm install: skipped to avoid network/dependency changes and lockfile churn.
+- npm run build: skipped because node_modules is absent.
+
+Risks:
+- Exact Codex hook, skill, and MCP auto-load integration remains documented-only until local Codex docs/help prove supported syntax.
+- apply_patch could add files but could not update existing files in this environment, so existing-file replacements used apply_patch-created .new files moved into place with RTK.

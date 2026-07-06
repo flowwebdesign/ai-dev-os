@@ -1,15 +1,14 @@
 # Hooks
 
-This folder is reserved for future active enforcement.
+This folder contains practical standalone hook templates.
 
-Hooks should help agents fail fast before unsafe actions:
+They can be run manually today. Exact Codex hook wiring is version-dependent, so this repo does not invent unsupported hook configuration syntax.
 
-- wrong repo or branch
-- dirty-tree conflict
-- recursive/noisy command
-- raw generated-file read
-- production mutation without approval
-- provider call without budget/mode
-- deploy without source map
+Use:
 
-Hooks are support rails, not a replacement for human-readable rules and proof reports.
+- `hooks/templates/preflight.sh` or `.ps1` before edits.
+- `hooks/templates/stop_check.sh` or `.ps1` before a final success claim.
+- `hooks/templates/evidence_capture.sh` or `.ps1` to append evidence to a run folder.
+- `hooks/install-hooks.sh` or `.ps1` to copy templates into a project-local `.ai-dev/hooks/` folder.
+
+These hooks are support rails, not a replacement for human-readable rules and proof reports.

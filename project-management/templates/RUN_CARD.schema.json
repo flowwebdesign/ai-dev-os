@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AI Dev OS Run Card",
+  "type": "object",
+  "required": ["schema_version", "run_id", "timestamp", "repo", "scope", "checks", "proof"],
+  "properties": {
+    "schema_version": { "type": "integer" },
+    "run_id": { "type": "string" },
+    "timestamp": { "type": "string" },
+    "actor": { "type": "string" },
+    "repo": { "type": "object" },
+    "scope": { "type": "object" },
+    "changes": { "type": "array" },
+    "checks": { "type": "array" },
+    "proof": { "type": "object" },
+    "evidence": { "type": "array" },
+    "next_smallest_lane": { "type": "string" }
+  }
+}

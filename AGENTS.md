@@ -13,6 +13,10 @@ Before editing code, running broad tests, touching deployments, or using paid pr
 - provider/cost mode for AI, search, TTS, embeddings, scraping, or paid APIs
 - exact scope and stop condition
 
+If `.ai-dev/AI_MEMORY_INDEX.md` exists, read it before deeper project files.
+
+Load the index first. Load deeper files only when the task classifier, proof requirement, or active risk points to them.
+
 If any boundary is wrong or unclear, stop the lane and report the first failing boundary.
 
 ## Command Hygiene
@@ -27,6 +31,7 @@ If any boundary is wrong or unclear, stop the lane and report the first failing 
 - Preserve existing repo content and user work.
 - Make the smallest safe change that proves the current claim.
 - Do not bundle adjacent fixes into the lane unless they are required to unblock the stated scope.
+- Classify the task before editing and map proof before claiming success.
 - Do not treat stale summaries, old handoffs, screenshots, or green tests as complete truth by themselves.
 
 ## Proof Standard
@@ -41,6 +46,8 @@ A claim is verified only when the relevant boundary has been checked:
 
 Record what passed, what failed, what was partial, and what was not run.
 
+Stop on wrong repo, wrong branch, unknown runtime, unknown provider/cost mode, missing proof boundary, or missing release traceability when release-relevant.
+
 ## Reporting
 
 Final reports must separate:
@@ -51,4 +58,7 @@ Final reports must separate:
 - blocked
 - changed files
 - tests/checks run
+- assumptions
+- skipped checks
+- risks
 - next smallest lane

@@ -1,15 +1,12 @@
 # MCP
 
-This folder is reserved for future MCP servers that expose project state to agents.
+This folder contains a minimal project-state MCP starter.
 
-The first planned server is a project-state server that reads `.ai-dev/` files and returns compact, current context:
+The first server is `mcp/project-state-server/`. It is intentionally small and project-local:
 
-- project identity
-- active runtime target
-- branch registry
-- proof requirements
-- release ledger summary
-- deploy source map
-- known blockers
+- reads compact `.ai-dev/` project state
+- writes run cards and progress logs inside `.ai-dev/`
+- refuses paths outside the current project root
+- stores no secrets
 
 Do not make an MCP server the only source of truth. It should summarize files and current checks, not replace verification.

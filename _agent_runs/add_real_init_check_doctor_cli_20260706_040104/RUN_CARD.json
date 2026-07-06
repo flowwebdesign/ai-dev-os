@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "run_id": "add_real_init_check_doctor_cli_20260706_040104",
+  "timestamp": "2026-07-06T04:01:04+02:00",
+  "actor": "Codex",
+  "repo": {
+    "path": "/home/fred/projects/ai-dev-os",
+    "remote": "https://github.com/flowwebdesign/ai-dev-os",
+    "branch": "feature/day1-working-control-layer",
+    "starting_commit": "0606415",
+    "dirty_tree": "pre-existing untracked snapshot artifacts preserved"
+  },
+  "scope": {
+    "title": "AI_DEV_OS_ADD_REAL_INIT_CHECK_DOCTOR_CLI",
+    "class": "CLI usability",
+    "target_runtime": "local Linux global install",
+    "identity": "local filesystem and git user",
+    "provider_mode": "no paid providers",
+    "stop_condition": "real init/check/doctor CLI installed and smoke tested"
+  },
+  "changes": [
+    "added bin/ai-dev-os",
+    "added bin/ai-dev-os.ps1",
+    "updated install.sh global package install",
+    "updated install.ps1 global package install",
+    "updated README and Codex home README CLI docs",
+    "created proof folder"
+  ],
+  "checks": [
+    "rtk bash -n bin/ai-dev-os",
+    "rtk bash -n install.sh",
+    "rtk ./bin/ai-dev-os help",
+    "rtk ./install.sh /tmp/ai-dev-os-global-install-target --install-codex-home",
+    "rtk /home/fred/.ai-dev-os/bin/ai-dev-os check /tmp/ai-dev-os-cli-project-20260706_040104",
+    "rtk /home/fred/.ai-dev-os/bin/ai-dev-os init /tmp/ai-dev-os-cli-project-20260706_040104",
+    "rtk /home/fred/.ai-dev-os/bin/ai-dev-os doctor /tmp/ai-dev-os-cli-project-20260706_040104",
+    "rtk /home/fred/.ai-dev-os/bin/ai-dev-os attach /tmp/ai-dev-os-cli-project-20260706_040104"
+  ],
+  "proof": {
+    "verified": [
+      "global CLI installs",
+      "help and version work",
+      "check stops before init",
+      "init creates project .ai-dev files",
+      "check works after init",
+      "doctor reports global and project health",
+      "attach alias is safe and idempotent"
+    ],
+    "partial": [
+      "PowerShell CLI exists but was not runtime-checked because pwsh is unavailable"
+    ],
+    "not_run": [
+      "MCP runtime/build"
+    ],
+    "blocked": []
+  },
+  "evidence": [
+    "_agent_runs/add_real_init_check_doctor_cli_20260706_040104/VERIFICATION.txt"
+  ],
+  "next_smallest_lane": "Add documented PATH setup for ~/.ai-dev-os/bin if desired."
+}

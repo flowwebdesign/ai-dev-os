@@ -1,0 +1,48 @@
+Repo proof:
+- rtk pwd: /home/fred/projects/ai-dev-os
+- rtk git status --short: only pre-existing untracked snapshot artifacts at start.
+- rtk git branch --show-current: feature/day1-working-control-layer
+- rtk git remote -v: origin https://github.com/flowwebdesign/ai-dev-os
+- rtk git log --oneline -n 1: 0606415 fix linux install smoke test issues
+
+Installed state proof:
+- /home/fred/.ai-dev-os existed.
+- /home/fred/.codex/AGENTS.md existed.
+- /home/fred/.ai-dev-os/bin/ai-dev-os-check.sh existed before this lane.
+
+Implemented CLI:
+- bin/ai-dev-os
+- bin/ai-dev-os.ps1
+- Commands: init, attach, check, doctor, version, help.
+
+Installer updates:
+- install.sh installs ~/.ai-dev-os/bin/ai-dev-os, ai-dev-os.ps1, ai-dev-os-check.sh, and ai-dev-os-check.ps1.
+- install.ps1 mirrors those global package files.
+
+Checks run:
+- rtk bash -n bin/ai-dev-os: pass.
+- rtk bash -n install.sh: pass.
+- rtk ./bin/ai-dev-os help: pass.
+- rtk ./install.sh --help: pass.
+- rtk ./install.sh /tmp/ai-dev-os-global-install-target --install-codex-home: pass.
+- rtk /home/fred/.ai-dev-os/bin/ai-dev-os help: pass.
+- rtk /home/fred/.ai-dev-os/bin/ai-dev-os version: pass.
+- rtk node -e JSON.parse(.../manifest.json): pass.
+
+Temp project smoke:
+- Temp repo: /tmp/ai-dev-os-cli-project-20260706_040104
+- rtk git init: pass.
+- rtk /home/fred/.ai-dev-os/bin/ai-dev-os check /tmp/ai-dev-os-cli-project-20260706_040104 before init: SUMMARY STOP, expected because .ai-dev files were missing.
+- rtk /home/fred/.ai-dev-os/bin/ai-dev-os init /tmp/ai-dev-os-cli-project-20260706_040104: pass, created .ai-dev files.
+- rtk /home/fred/.ai-dev-os/bin/ai-dev-os check /tmp/ai-dev-os-cli-project-20260706_040104 after init: SUMMARY WARN, exit 0. Warnings were expected for untracked .ai-dev and missing optional PROOF_MATRIX.md.
+- rtk /home/fred/.ai-dev-os/bin/ai-dev-os doctor /tmp/ai-dev-os-cli-project-20260706_040104: SUMMARY WARN, exit 0.
+- rtk /home/fred/.ai-dev-os/bin/ai-dev-os attach /tmp/ai-dev-os-cli-project-20260706_040104: pass, skipped existing files.
+- rtk rg --files --hidden /tmp/ai-dev-os-cli-project-20260706_040104/.ai-dev: listed expected generated project files.
+
+Not run:
+- MCP runtime/build was not run by request.
+- PowerShell CLI parse/runtime check was not run because pwsh was not installed.
+
+Residual notes:
+- ~/.ai-dev-os/bin is installed but PATH modification is not performed.
+- The installed VERSION still reflects the pre-commit source hash until the final post-commit install is rerun.

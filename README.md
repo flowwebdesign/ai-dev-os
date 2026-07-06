@@ -24,7 +24,19 @@ This repo is project-agnostic. It exists to make agents prove the basics before 
 3. Add `.ai-dev/PROOF_REQUIREMENTS.md` entries for the app's real proof boundaries.
 4. Add or adapt the Codex instructions from `templates/codex/AGENTS.md`.
 5. Use `core/TASK_CLASSIFIER.md` before starting work and `core/PROOF_MATRIX.md` before claiming success.
-6. Run `scripts/ai-dev-os-check.sh /path/to/project` to check the installed control files.
+6. Run `ai-dev-os check /path/to/project` after global install, or `scripts/ai-dev-os-check.sh /path/to/project` from this repo.
+
+## CLI
+
+After global install, use:
+
+```sh
+~/.ai-dev-os/bin/ai-dev-os init /path/to/project
+~/.ai-dev-os/bin/ai-dev-os check /path/to/project
+~/.ai-dev-os/bin/ai-dev-os doctor /path/to/project
+```
+
+`attach` is an alias for `init`.
 
 ## Codex Home Bootstrap
 
@@ -40,7 +52,7 @@ PowerShell:
 .\install.ps1 -InstallCodexHome
 ```
 
-The installers create `~/.codex` if missing and copy `templates/codex-home/AGENTS.md` to `~/.codex/AGENTS.md`. Existing files are skipped unless `--force` or `-Force` is supplied; forced installs create a backup first.
+The installers create `~/.ai-dev-os` with the CLI and checkers, create `~/.codex` if missing, and copy `templates/codex-home/AGENTS.md` to `~/.codex/AGENTS.md`. Existing Codex AGENTS files are skipped unless `--force` or `-Force` is supplied; forced installs create a backup first.
 
 ## Non-Negotiable Pattern
 

@@ -18,4 +18,6 @@ PowerShell:
 
 The installers do not overwrite an existing global `AGENTS.md` unless `--force` or `-Force` is supplied. Forced installs create a timestamped backup first.
 
+The Linux installer also creates `~/.ai-dev-os/bin/ai-dev-os` for `init`, `attach`, `check`, `doctor`, `version`, and `help`.
+
 Exact hook, skill, and MCP auto-load locations can vary by Codex version. This bootstrap is a readable instruction template, not a claim that every Codex surface auto-loads portable skills or hooks.

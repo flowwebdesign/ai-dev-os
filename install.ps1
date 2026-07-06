@@ -68,12 +68,33 @@ Copy-IfMissing (Join-Path $ScriptDir "project-management/templates/WEEKLY_REVIEW
 Copy-IfMissing (Join-Path $ScriptDir "project-management/templates/RUN_CARD.schema.json") (Join-Path $aiDevDir "RUN_CARD.schema.json")
 
 if ($InstallCodexHome) {
+    $aiDevOsHome = if ($env:AI_DEV_OS_HOME) { $env:AI_DEV_OS_HOME } else { Join-Path $HOME ".ai-dev-os" }
+    $aiDevOsBin = Join-Path $aiDevOsHome "bin"
+    if (-not (Test-Path -LiteralPath $aiDevOsBin)) {
+        New-Item -ItemType Directory -Path $aiDevOsBin | Out-Null
+    }
+
+    Copy-Item -LiteralPath (Join-Path $ScriptDir "bin/ai-dev-os") -Destination (Join-Path $aiDevOsBin "ai-dev-os")
+    Copy-Item -LiteralPath (Join-Path $ScriptDir "bin/ai-dev-os.ps1") -Destination (Join-Path $aiDevOsBin "ai-dev-os.ps1")
+    Copy-Item -LiteralPath (Join-Path $ScriptDir "scripts/ai-dev-os-check.sh") -Destination (Join-Path $aiDevOsBin "ai-dev-os-check.sh")
+    Copy-Item -LiteralPath (Join-Path $ScriptDir "scripts/ai-dev-os-check.ps1") -Destination (Join-Path $aiDevOsBin "ai-dev-os-check.ps1")
+
+    $version = try { git -C $ScriptDir rev-parse --short HEAD 2>$null } catch { "unknown" }
+    if (-not $version) { $version = "unknown" }
+    Set-Content -LiteralPath (Join-Path $aiDevOsHome "VERSION") -Value $version
+    @{
+        name = "ai-dev-os"
+        version = $version
+        installed_from = $ScriptDir
+    } | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $aiDevOsHome "manifest.json")
+
     $codexHome = if ($env:CODEX_HOME) { $env:CODEX_HOME } else { Join-Path $HOME ".codex" }
     if (-not (Test-Path -LiteralPath $codexHome)) {
         New-Item -ItemType Directory -Path $codexHome | Out-Null
     }
 
     Copy-WithOptionalForce (Join-Path $ScriptDir "templates/codex-home/AGENTS.md") (Join-Path $codexHome "AGENTS.md")
+    Write-Host "AI Dev OS global files installed in $aiDevOsHome"
     Write-Host "Codex Home Bootstrap installed in $codexHome"
 }
 

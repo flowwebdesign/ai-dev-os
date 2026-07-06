@@ -1,0 +1,129 @@
+#!/usr/bin/env sh
+set -eu
+
+SCRIPT_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
+AI_DEV_OS_HOME="$(CDPATH= cd -- "$SCRIPT_DIR/.." 2>/dev/null && pwd || true)"
+
+find_source_dir() {
+  if [ -f "$SCRIPT_DIR/../install.sh" ]; then
+    CDPATH= cd -- "$SCRIPT_DIR/.." && pwd
+    return
+  fi
+
+  manifest="$AI_DEV_OS_HOME/manifest.json"
+  if [ -f "$manifest" ]; then
+    source_dir="$(sed -n 's/.*"installed_from"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' "$manifest" | head -n 1)"
+    if [ -n "$source_dir" ] && [ -f "$source_dir/install.sh" ]; then
+      printf '%s\n' "$source_dir"
+      return
+    fi
+  fi
+
+  echo "STOP cannot locate AI Dev OS source install.sh" >&2
+  exit 1
+}
+
+usage() {
+  cat <<'EOF'
+Usage: ai-dev-os <command> [path]
+
+Commands:
+  init [path]      Install .ai-dev project files into path, default .
+  attach [path]    Alias for init
+  check [path]     Check required .ai-dev files, default .
+  doctor [path]    Check global install and project health, default .
+  version          Print installed version
+  help             Show this help
+EOF
+}
+
+cmd="${1:-help}"
+case "$cmd" in
+  -h|--help|help)
+    usage
+    ;;
+  version|--version)
+    if [ -f "$AI_DEV_OS_HOME/VERSION" ]; then
+      cat "$AI_DEV_OS_HOME/VERSION"
+    else
+      git -C "$(find_source_dir)" rev-parse --short HEAD 2>/dev/null || echo "unknown"
+    fi
+    ;;
+  init|attach)
+    shift || true
+    target="${1:-.}"
+    source_dir="$(find_source_dir)"
+    "$source_dir/install.sh" "$target"
+    ;;
+  check)
+    shift || true
+    target="${1:-.}"
+    if [ -x "$AI_DEV_OS_HOME/bin/ai-dev-os-check.sh" ]; then
+      "$AI_DEV_OS_HOME/bin/ai-dev-os-check.sh" "$target"
+    else
+      source_dir="$(find_source_dir)"
+      "$source_dir/scripts/ai-dev-os-check.sh" "$target"
+    fi
+    ;;
+  doctor)
+    shift || true
+    target="${1:-.}"
+    warn=0
+
+    if [ -d "$AI_DEV_OS_HOME" ]; then
+      echo "PASS ai-dev-os home=$AI_DEV_OS_HOME"
+    else
+      echo "WARN ai-dev-os home not found: $AI_DEV_OS_HOME"
+      warn=1
+    fi
+
+    if [ -f "$AI_DEV_OS_HOME/manifest.json" ]; then
+      echo "PASS manifest=$AI_DEV_OS_HOME/manifest.json"
+    else
+      echo "WARN manifest missing"
+      warn=1
+    fi
+
+    if [ -f "$HOME/.codex/AGENTS.md" ]; then
+      echo "PASS codex agents=$HOME/.codex/AGENTS.md"
+    else
+      echo "WARN codex agents missing"
+      warn=1
+    fi
+
+    if [ -x "$SCRIPT_DIR/ai-dev-os" ]; then
+      echo "PASS cli=$SCRIPT_DIR/ai-dev-os"
+    else
+      echo "WARN cli script is not executable"
+      warn=1
+    fi
+
+    if [ -d "$target" ]; then
+      echo "PASS target=$target"
+    else
+      echo "STOP target not found: $target"
+      exit 1
+    fi
+
+    check_output="$("$0" check "$target" 2>&1)" || {
+      printf '%s\n' "$check_output"
+      echo "SUMMARY STOP"
+      exit 1
+    }
+    printf '%s\n' "$check_output"
+    if printf '%s\n' "$check_output" | grep -q "SUMMARY WARN"; then
+      warn=1
+    fi
+
+    if [ "$warn" -eq 1 ]; then
+      echo "SUMMARY WARN"
+    else
+      echo "SUMMARY PASS"
+    fi
+    ;;
+  *)
+    echo "STOP unknown command: $cmd" >&2
+    usage >&2
+    exit 1
+    ;;
+esac

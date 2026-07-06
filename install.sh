@@ -16,6 +16,7 @@ while [ "$#" -gt 0 ]; do
       ;;
     --help|-h)
       echo "Usage: ./install.sh [target-dir] [--install-codex-home] [--force]"
+      echo "With --install-codex-home, also installs ~/.ai-dev-os with bin/ai-dev-os-check.sh and manifest.json."
       exit 0
       ;;
     *)
@@ -79,9 +80,18 @@ copy_if_missing "$SCRIPT_DIR/project-management/templates/WEEKLY_REVIEW.md" "$AI
 copy_if_missing "$SCRIPT_DIR/project-management/templates/RUN_CARD.schema.json" "$AI_DEV_DIR/RUN_CARD.schema.json"
 
 if [ "$INSTALL_CODEX_HOME" -eq 1 ]; then
+  AI_DEV_OS_HOME="${AI_DEV_OS_HOME:-$HOME/.ai-dev-os}"
+  mkdir -p "$AI_DEV_OS_HOME/bin"
+  cp "$SCRIPT_DIR/scripts/ai-dev-os-check.sh" "$AI_DEV_OS_HOME/bin/ai-dev-os-check.sh"
+  chmod +x "$AI_DEV_OS_HOME/bin/ai-dev-os-check.sh"
+  VERSION_VALUE="$(git -C "$SCRIPT_DIR" rev-parse --short HEAD 2>/dev/null || printf unknown)"
+  printf '%s\n' "$VERSION_VALUE" > "$AI_DEV_OS_HOME/VERSION"
+  printf '{\n  "name": "ai-dev-os",\n  "version": "%s",\n  "installed_from": "%s"\n}\n' "$VERSION_VALUE" "$SCRIPT_DIR" > "$AI_DEV_OS_HOME/manifest.json"
+
   CODEX_HOME_DIR="${CODEX_HOME:-$HOME/.codex}"
   mkdir -p "$CODEX_HOME_DIR"
   copy_with_optional_force "$SCRIPT_DIR/templates/codex-home/AGENTS.md" "$CODEX_HOME_DIR/AGENTS.md"
+  echo "AI Dev OS global files installed in $AI_DEV_OS_HOME"
   echo "Codex Home Bootstrap installed in $CODEX_HOME_DIR"
 fi
 

@@ -1,0 +1,53 @@
+Repo proof:
+- rtk pwd: /home/fred/projects/ai-dev-os
+- rtk git remote -v: origin https://github.com/flowwebdesign/ai-dev-os
+- rtk git branch --show-current: feature/day1-working-control-layer
+- rtk git log --oneline -n 1 before fix: 408e506 make ai dev os working control layer
+- rtk git status --short: only pre-existing untracked snapshot artifacts before this smoke lane
+
+Installer help:
+- rtk ./install.sh --help showed: Usage: ./install.sh [target-dir] [--install-codex-home] [--force]
+- No dry-run option was present.
+
+Install command:
+- rtk ./install.sh /tmp/ai-dev-os-global-install-target --install-codex-home
+
+Install result:
+- Before fix, installer created target .ai-dev files and skipped existing /home/fred/.codex/AGENTS.md, but did not create /home/fred/.ai-dev-os.
+- Small fix added /home/fred/.ai-dev-os, VERSION, manifest.json, and bin/ai-dev-os-check.sh during --install-codex-home.
+- After fix, rerun created /home/fred/.ai-dev-os and installed checker binary.
+
+Installed paths verified:
+- /home/fred/.ai-dev-os/
+- /home/fred/.ai-dev-os/VERSION
+- /home/fred/.ai-dev-os/manifest.json
+- /home/fred/.ai-dev-os/bin/ai-dev-os-check.sh
+- /home/fred/.codex/AGENTS.md
+
+Temp project:
+- /tmp/ai-dev-os-smoke-project
+- rtk git init succeeded.
+
+Checker before install:
+- rtk /home/fred/projects/ai-dev-os/scripts/ai-dev-os-check.sh /tmp/ai-dev-os-smoke-project
+- Result: SUMMARY STOP because .ai-dev files were missing.
+
+Attach/init:
+- No separate attach/init command was installed or documented.
+- Used documented installer: rtk /home/fred/projects/ai-dev-os/install.sh /tmp/ai-dev-os-smoke-project
+
+Checker after install:
+- rtk /home/fred/.ai-dev-os/bin/ai-dev-os-check.sh /tmp/ai-dev-os-smoke-project
+- Result: SUMMARY WARN, exit 0.
+- Warnings were expected: .ai-dev files are untracked in the temp repo and .ai-dev/PROOF_MATRIX.md is optional/missing.
+
+Generated project files:
+- rtk rg --files --hidden /tmp/ai-dev-os-smoke-project/.ai-dev listed 16 generated .ai-dev files, including AI_MEMORY_INDEX.md, PROJECT_CONTEXT.md, ACTIVE_STATE.md, PROOF_REQUIREMENTS.md, RELEASE_LEDGER.jsonl, and project-management templates.
+
+Hook smoke:
+- rtk /home/fred/projects/ai-dev-os/hooks/templates/preflight.sh in temp repo: PASS repo/branch/remote with dirty-tree WARN.
+- rtk /home/fred/projects/ai-dev-os/hooks/templates/stop_check.sh /tmp/ai-dev-os-smoke-project/.ai-dev/smoke-run: PASS.
+- rtk /home/fred/projects/ai-dev-os/hooks/templates/evidence_capture.sh /tmp/ai-dev-os-smoke-project/.ai-dev/smoke-run "linux install smoke evidence": PASS appended EVIDENCE.log.
+
+Not run:
+- MCP build was not run. Dependencies were not already installed and the task explicitly said not to build MCP unless dependencies were already installed and documented.

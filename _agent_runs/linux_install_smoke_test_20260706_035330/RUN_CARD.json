@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "run_id": "linux_install_smoke_test_20260706_035330",
+  "timestamp": "2026-07-06T03:53:30+02:00",
+  "actor": "Codex",
+  "repo": {
+    "path": "/home/fred/projects/ai-dev-os",
+    "remote": "https://github.com/flowwebdesign/ai-dev-os",
+    "branch": "feature/day1-working-control-layer",
+    "starting_commit": "408e506",
+    "dirty_tree": "pre-existing untracked snapshot artifacts preserved"
+  },
+  "scope": {
+    "title": "AI_DEV_OS_LINUX_INSTALL_SMOKE_TEST",
+    "class": "linux install smoke test",
+    "target_runtime": "local Linux machine",
+    "identity": "local filesystem and git user",
+    "provider_mode": "no paid providers",
+    "stop_condition": "global install, temp project install, checker, hooks, proof folder, and fix commit if needed"
+  },
+  "install": {
+    "command": "./install.sh /tmp/ai-dev-os-global-install-target --install-codex-home",
+    "global_home": "/home/fred/.ai-dev-os",
+    "codex_agents": "/home/fred/.codex/AGENTS.md",
+    "temp_project": "/tmp/ai-dev-os-smoke-project"
+  },
+  "checks": [
+    "rtk ./install.sh --help",
+    "rtk bash -n install.sh",
+    "rtk ./install.sh /tmp/ai-dev-os-global-install-target --install-codex-home",
+    "rtk /home/fred/projects/ai-dev-os/scripts/ai-dev-os-check.sh /tmp/ai-dev-os-smoke-project",
+    "rtk /home/fred/projects/ai-dev-os/install.sh /tmp/ai-dev-os-smoke-project",
+    "rtk /home/fred/.ai-dev-os/bin/ai-dev-os-check.sh /tmp/ai-dev-os-smoke-project",
+    "rtk /home/fred/projects/ai-dev-os/hooks/templates/preflight.sh",
+    "rtk /home/fred/projects/ai-dev-os/hooks/templates/stop_check.sh /tmp/ai-dev-os-smoke-project/.ai-dev/smoke-run",
+    "rtk /home/fred/projects/ai-dev-os/hooks/templates/evidence_capture.sh /tmp/ai-dev-os-smoke-project/.ai-dev/smoke-run linux install smoke evidence"
+  ],
+  "proof": {
+    "verified": [
+      "global install creates /home/fred/.ai-dev-os after fix",
+      "global checker binary exists and runs",
+      "Codex AGENTS path exists",
+      "temp git repo can be seeded with .ai-dev templates",
+      "checker fails before install and exits 0 with warnings after install",
+      "hook templates run manually"
+    ],
+    "partial": [
+      "Codex global AGENTS.md existed before install and was skipped without --force"
+    ],
+    "not_run": [
+      "MCP build"
+    ],
+    "blocked": []
+  },
+  "next_smallest_lane": "Optionally add a documented PATH snippet for ~/.ai-dev-os/bin."
+}

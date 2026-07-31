@@ -58,15 +58,15 @@ function Get-CommandArgs {
 }
 
 function Get-TargetArg {
-    $args = Get-CommandArgs
-    if ($args -and $args.Count -gt 0) {
-        return $args[0]
+    $commandArgs = @(Get-CommandArgs)
+    if ($commandArgs.Count -gt 0) {
+        return [string]$commandArgs[0]
     }
     return "."
 }
 
 function Parse-InitArgs {
-    param([string[]]$Args)
+    param([string[]]$InputArgs)
 
     $result = @{
         Target = "."
@@ -75,15 +75,15 @@ function Parse-InitArgs {
     }
 
     $i = 0
-    while ($i -lt $Args.Count) {
-        $arg = $Args[$i]
+    while ($i -lt $InputArgs.Count) {
+        $arg = $InputArgs[$i]
         if ($arg -in @("--profile", "-Profile")) {
             $i++
-            if ($i -ge $Args.Count -or -not $Args[$i]) {
+            if ($i -ge $InputArgs.Count -or -not $InputArgs[$i]) {
                 Write-Host "STOP -Profile requires a value"
                 exit 1
             }
-            $result.Profile = $Args[$i]
+            $result.Profile = $InputArgs[$i]
         } elseif ($arg -in @("--detect", "-Detect")) {
             $result.Detect = $true
         } elseif ($arg -in @("-h", "--help", "-Help")) {
@@ -149,19 +149,27 @@ function Write-CliProfile {
 switch ($Command) {
     { $_ -in @("help", "-h", "--help") } {
         Show-Help
-        break
+        exit 0
     }
     { $_ -in @("version", "--version") } {
         $version = Join-Path $AiDevOsHome "VERSION"
         if (Test-Path -LiteralPath $version) {
             Get-Content -LiteralPath $version
         } else {
-            Write-Host "unknown"
+            $sourceDir = Find-SourceDir
+            $gitVersion = try {
+                $value = & git -C $sourceDir rev-parse --short HEAD 2>$null
+                if ($LASTEXITCODE -eq 0) { $value } else { "unknown" }
+            } catch {
+                "unknown"
+            }
+            Write-Host $gitVersion
         }
-        break
+        exit 0
     }
     { $_ -in @("init", "attach") } {
-        $parsed = Parse-InitArgs -Args (Get-CommandArgs)
+        $commandArgs = @(Get-CommandArgs)
+        $parsed = Parse-InitArgs -InputArgs $commandArgs
         if ($Profile) {
             $parsed.Profile = $Profile
         }
@@ -171,7 +179,7 @@ switch ($Command) {
         $sourceDir = Find-SourceDir
         & (Join-Path $sourceDir "install.ps1") -Project -TargetDir $parsed.Target
         Write-CliProfile -Target $parsed.Target -Profile $parsed.Profile -Detect $parsed.Detect
-        break
+        exit 0
     }
     "check" {
         $TargetDir = Get-TargetArg

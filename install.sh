@@ -90,7 +90,14 @@ if [ "$INSTALL_GLOBAL" -eq 1 ]; then
   cp "$SCRIPT_DIR/bin/ai-dev-os.ps1" "$AI_DEV_OS_HOME/bin/ai-dev-os.ps1"
   cp "$SCRIPT_DIR/scripts/ai-dev-os-check.sh" "$AI_DEV_OS_HOME/bin/ai-dev-os-check.sh"
   cp "$SCRIPT_DIR/scripts/ai-dev-os-check.ps1" "$AI_DEV_OS_HOME/bin/ai-dev-os-check.ps1"
-  chmod +x "$AI_DEV_OS_HOME/bin/ai-dev-os" "$AI_DEV_OS_HOME/bin/ai-dev-os-check.sh"
+  if [ "$SCRIPT_DIR" != "$AI_DEV_OS_HOME" ]; then
+    cp "$SCRIPT_DIR/install.sh" "$AI_DEV_OS_HOME/install.sh"
+    cp "$SCRIPT_DIR/install.ps1" "$AI_DEV_OS_HOME/install.ps1"
+    mkdir -p "$AI_DEV_OS_HOME/templates" "$AI_DEV_OS_HOME/project-management"
+    cp -R "$SCRIPT_DIR/templates/." "$AI_DEV_OS_HOME/templates/"
+    cp -R "$SCRIPT_DIR/project-management/." "$AI_DEV_OS_HOME/project-management/"
+  fi
+  chmod +x "$AI_DEV_OS_HOME/bin/ai-dev-os" "$AI_DEV_OS_HOME/bin/ai-dev-os-check.sh" "$AI_DEV_OS_HOME/install.sh"
   VERSION_VALUE="$(git -C "$SCRIPT_DIR" rev-parse --short HEAD 2>/dev/null || printf unknown)"
   printf '%s\n' "$VERSION_VALUE" > "$AI_DEV_OS_HOME/VERSION"
   printf '{\n  "name": "ai-dev-os",\n  "version": "%s",\n  "installed_from": "%s"\n}\n' "$VERSION_VALUE" "$SCRIPT_DIR" > "$AI_DEV_OS_HOME/manifest.json"

@@ -10,10 +10,10 @@ $warn = $false
 function Check-File {
     param([string]$Name)
     $path = Join-Path $aiDevDir $Name
-    if (Test-Path -LiteralPath $path) {
+    if ((Test-Path -LiteralPath $path -PathType Leaf) -and ((Get-Item -LiteralPath $path).Length -gt 0)) {
         Write-Host "PASS .ai-dev/$Name"
     } else {
-        Write-Host "STOP missing .ai-dev/$Name"
+        Write-Host "STOP missing or empty .ai-dev/$Name"
         $script:stop = $true
     }
 }
@@ -32,15 +32,23 @@ function Get-GitLines {
     }
 }
 
-if (-not (Test-Path -LiteralPath (Join-Path $TargetDir ".git"))) {
+if ((Get-GitLines @("rev-parse", "--is-inside-work-tree")) -notcontains "true") {
     Write-Host "STOP git repo not found at $TargetDir"
     $stop = $true
 } else {
     Write-Host "PASS git repo found"
     $remote = Get-GitLines @("remote", "get-url", "origin")
     $branch = Get-GitLines @("branch", "--show-current")
-    if (-not $remote) { $remote = @("none") }
-    if (-not $branch) { $branch = @("unknown") }
+    if (-not $remote) {
+        $remote = @("none")
+        Write-Host "WARN origin remote missing"
+        $warn = $true
+    }
+    if (-not $branch) {
+        $branch = @("detached")
+        Write-Host "WARN branch is detached or unknown"
+        $warn = $true
+    }
     Write-Host "INFO remote=$($remote -join ' ')"
     Write-Host "INFO branch=$($branch -join ' ')"
     $dirty = Get-GitLines @("status", "--short")
@@ -49,7 +57,7 @@ if (-not (Test-Path -LiteralPath (Join-Path $TargetDir ".git"))) {
         $dirty
         $warn = $true
     } else {
-        Write-Host "PASS clean tracked tree"
+        Write-Host "PASS clean working tree"
     }
 }
 

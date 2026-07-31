@@ -16,20 +16,33 @@ check_file() {
   fi
 }
 
-if [ ! -d "$TARGET_DIR/.git" ]; then
+inside_work_tree="$(git -C "$TARGET_DIR" rev-parse --is-inside-work-tree 2>/dev/null || true)"
+if [ "$inside_work_tree" != "true" ]; then
   echo "STOP git repo not found at $TARGET_DIR"
   STOP=1
 else
   echo "PASS git repo found"
-  echo "INFO remote=$(git -C "$TARGET_DIR" remote get-url origin 2>/dev/null || true)"
-  echo "INFO branch=$(git -C "$TARGET_DIR" branch --show-current 2>/dev/null || true)"
+  remote="$(git -C "$TARGET_DIR" remote get-url origin 2>/dev/null || true)"
+  branch="$(git -C "$TARGET_DIR" branch --show-current 2>/dev/null || true)"
+  if [ -z "$remote" ]; then
+    echo "WARN origin remote missing"
+    remote="none"
+    WARN=1
+  fi
+  if [ -z "$branch" ]; then
+    echo "WARN branch is detached or unknown"
+    branch="detached"
+    WARN=1
+  fi
+  echo "INFO remote=$remote"
+  echo "INFO branch=$branch"
   dirty="$(git -C "$TARGET_DIR" status --short 2>/dev/null || true)"
   if [ -n "$dirty" ]; then
     echo "WARN dirty tree"
     printf '%s\n' "$dirty"
     WARN=1
   else
-    echo "PASS clean tracked tree"
+    echo "PASS clean working tree"
   fi
 fi
 

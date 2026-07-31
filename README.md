@@ -69,7 +69,7 @@ PowerShell:
 .\install.ps1 -InstallCodexHome -Force
 ```
 
-The global install creates `~/.ai-dev-os` with the CLI and checkers, creates `~/.codex` if missing, and copies `templates/codex-home/AGENTS.md` to `~/.codex/AGENTS.md`. Existing Codex AGENTS files are skipped unless `--force` or `-Force` is supplied; forced installs create a backup first.
+The global install creates a self-contained `~/.ai-dev-os` runtime bundle with the CLI, checkers, installers, project templates, and project-management templates. It also creates `~/.codex` if missing and copies `templates/codex-home/AGENTS.md` to `~/.codex/AGENTS.md`. Existing Codex AGENTS files are skipped unless `--force` or `-Force` is supplied; forced installs create a backup first. Project initialisation continues to work if the original source checkout is moved or removed.
 
 Global install does not create project `.ai-dev` files. Project init only happens through `ai-dev-os init`, `./install.sh --project`, or `.\install.ps1 -Project`.
 

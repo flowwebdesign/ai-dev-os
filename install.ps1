@@ -68,6 +68,21 @@ function Copy-WithOptionalForce {
     Write-Host "create $Destination"
 }
 
+function Copy-DirectoryContents {
+    param(
+        [string]$Source,
+        [string]$Destination
+    )
+
+    if (-not (Test-Path -LiteralPath $Destination)) {
+        New-Item -ItemType Directory -Path $Destination | Out-Null
+    }
+
+    Get-ChildItem -LiteralPath $Source -Force | ForEach-Object {
+        Copy-Item -LiteralPath $_.FullName -Destination $Destination -Recurse -Force
+    }
+}
+
 if ($Help) {
     Show-Help
     exit 0
@@ -88,6 +103,15 @@ if ($doGlobalInstall) {
     Copy-Item -LiteralPath (Join-Path $ScriptDir "bin/ai-dev-os.ps1") -Destination (Join-Path $aiDevOsBin "ai-dev-os.ps1")
     Copy-Item -LiteralPath (Join-Path $ScriptDir "scripts/ai-dev-os-check.sh") -Destination (Join-Path $aiDevOsBin "ai-dev-os-check.sh")
     Copy-Item -LiteralPath (Join-Path $ScriptDir "scripts/ai-dev-os-check.ps1") -Destination (Join-Path $aiDevOsBin "ai-dev-os-check.ps1")
+
+    $sourceRoot = [System.IO.Path]::GetFullPath($ScriptDir).TrimEnd('\', '/')
+    $runtimeRoot = [System.IO.Path]::GetFullPath($aiDevOsHome).TrimEnd('\', '/')
+    if ($sourceRoot -ne $runtimeRoot) {
+        Copy-Item -LiteralPath (Join-Path $ScriptDir "install.ps1") -Destination (Join-Path $aiDevOsHome "install.ps1") -Force
+        Copy-Item -LiteralPath (Join-Path $ScriptDir "install.sh") -Destination (Join-Path $aiDevOsHome "install.sh") -Force
+        Copy-DirectoryContents (Join-Path $ScriptDir "templates") (Join-Path $aiDevOsHome "templates")
+        Copy-DirectoryContents (Join-Path $ScriptDir "project-management") (Join-Path $aiDevOsHome "project-management")
+    }
 
     $version = try { git -C $ScriptDir rev-parse --short HEAD 2>$null } catch { "unknown" }
     if (-not $version) { $version = "unknown" }
@@ -148,6 +172,6 @@ if ($Project) {
 Write-Host "Next steps:"
 Write-Host '$env:Path = "$HOME\.ai-dev-os\bin;$env:Path"'
 Write-Host '& "$HOME\.ai-dev-os\bin\ai-dev-os.ps1" doctor'
-Write-Host 'cd C:\Users\floww\Documents\Scripts\Study_master'
+Write-Host 'cd C:\path\to\project'
 Write-Host '& "$HOME\.ai-dev-os\bin\ai-dev-os.ps1" check .'
 Write-Host '& "$HOME\.ai-dev-os\bin\ai-dev-os.ps1" init -Profile serious -Detect'

@@ -1,0 +1,120 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check shell syntax
+        run: |
+          sh -n install.sh
+          sh -n bin/ai-dev-os
+          sh -n scripts/ai-dev-os-check.sh
+          sh -n hooks/templates/preflight.sh
+          sh -n hooks/templates/stop_check.sh
+          sh -n hooks/templates/evidence_capture.sh
+
+      - name: Exercise self-contained install and linked worktree
+        shell: bash
+        run: |
+          set -euo pipefail
+          export AI_DEV_OS_HOME="$RUNNER_TEMP/ai-dev-os-home"
+          export CODEX_HOME="$RUNNER_TEMP/codex-home"
+          ./install.sh --install-codex-home
+          test -f "$AI_DEV_OS_HOME/install.sh"
+          test -f "$AI_DEV_OS_HOME/templates/project/.ai-dev/AI_MEMORY_INDEX.md"
+
+          project="$RUNNER_TEMP/project"
+          linked="$RUNNER_TEMP/linked-worktree"
+          mkdir -p "$project"
+          git -C "$project" init
+          git -C "$project" config user.email "ci@example.invalid"
+          git -C "$project" config user.name "AI Dev OS CI"
+          printf '# Smoke project\n' > "$project/README.md"
+          git -C "$project" add README.md
+          git -C "$project" commit -m "Initial smoke project"
+
+          "$AI_DEV_OS_HOME/bin/ai-dev-os" init --profile serious --detect "$project"
+          "$AI_DEV_OS_HOME/bin/ai-dev-os" check "$project"
+          "$AI_DEV_OS_HOME/bin/ai-dev-os" doctor "$project"
+          grep -q -- '- Profile: serious' "$project/.ai-dev/CLI_PROFILE.md"
+
+          nested="$project/packages/nested-app"
+          mkdir -p "$nested"
+          "$AI_DEV_OS_HOME/bin/ai-dev-os" init --profile serious "$nested"
+          git -C "$project" add packages/nested-app/.ai-dev
+          git -C "$project" commit -m "Add nested AI Dev OS control layer"
+          "$AI_DEV_OS_HOME/bin/ai-dev-os" check "$nested"
+
+          git -C "$project" worktree add -b ci-linked "$linked"
+          "$AI_DEV_OS_HOME/bin/ai-dev-os" init --profile standard "$linked"
+          "$AI_DEV_OS_HOME/bin/ai-dev-os" check "$linked"
+
+  smoke-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Exercise self-contained install and linked worktree
+        shell: powershell
+        run: |
+          $ErrorActionPreference = "Stop"
+          $env:AI_DEV_OS_HOME = Join-Path $env:RUNNER_TEMP "ai-dev-os-home"
+          $env:CODEX_HOME = Join-Path $env:RUNNER_TEMP "codex-home"
+          .\install.ps1 -InstallCodexHome
+
+          $cli = Join-Path $env:AI_DEV_OS_HOME "bin/ai-dev-os.ps1"
+          if (-not (Test-Path -LiteralPath (Join-Path $env:AI_DEV_OS_HOME "install.ps1"))) {
+              throw "Installed PowerShell runtime is missing install.ps1"
+          }
+          if (-not (Test-Path -LiteralPath (Join-Path $env:AI_DEV_OS_HOME "templates/project/.ai-dev/AI_MEMORY_INDEX.md"))) {
+              throw "Installed PowerShell runtime is missing project templates"
+          }
+
+          $project = Join-Path $env:RUNNER_TEMP "project"
+          $linked = Join-Path $env:RUNNER_TEMP "linked-worktree"
+          New-Item -ItemType Directory -Path $project | Out-Null
+          git -C $project init
+          git -C $project config user.email "ci@example.invalid"
+          git -C $project config user.name "AI Dev OS CI"
+          Set-Content -LiteralPath (Join-Path $project "README.md") -Value "# Smoke project"
+          git -C $project add README.md
+          git -C $project commit -m "Initial smoke project"
+
+          & $cli init $project -Profile serious -Detect
+          if ($LASTEXITCODE -ne 0) { throw "PowerShell init failed" }
+          & $cli check $project
+          if ($LASTEXITCODE -ne 0) { throw "PowerShell check failed" }
+          & $cli doctor $project
+          if ($LASTEXITCODE -ne 0) { throw "PowerShell doctor failed" }
+          if ((Get-Content -LiteralPath (Join-Path $project ".ai-dev/CLI_PROFILE.md") -Raw) -notmatch "Profile: serious") {
+              throw "PowerShell profile readback failed"
+          }
+
+          $nested = Join-Path $project "packages\nested-app"
+          New-Item -ItemType Directory -Path $nested -Force | Out-Null
+          & $cli init $nested -Profile serious
+          if ($LASTEXITCODE -ne 0) { throw "PowerShell nested init failed" }
+          git -C $project add packages/nested-app/.ai-dev
+          git -C $project commit -m "Add nested AI Dev OS control layer"
+          & $cli check $nested
+          if ($LASTEXITCODE -ne 0) { throw "PowerShell nested check failed" }
+
+          $previousErrorActionPreference = $ErrorActionPreference
+          $ErrorActionPreference = "Continue"
+          git -C $project worktree add -b ci-linked $linked 2>&1 | Out-Null
+          $worktreeExit = $LASTEXITCODE
+          $ErrorActionPreference = $previousErrorActionPreference
+          if ($worktreeExit -ne 0) { throw "PowerShell linked-worktree creation failed" }
+          & $cli init $linked -Profile standard
+          if ($LASTEXITCODE -ne 0) { throw "PowerShell linked-worktree init failed" }
+          & $cli check $linked
+          if ($LASTEXITCODE -ne 0) { throw "PowerShell linked-worktree check failed" }
